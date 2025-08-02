@@ -22,18 +22,9 @@ const search = () => {
   // Debounced search effect (by wrapping it with timeout function)
   // we donot want to api req on every key stroke
   useEffect(() => {
-
-    
-    
     const timeoutId = setTimeout(async () => {
       if (searchQuery.trim()) {
         await loadMovies();
-
-        // Call updateSearchCount only if there are results
-        //! error may occur
-        if (movies?.length! > 0 && movies?.[0]) {
-          await updateSearchCount(searchQuery, movies[0]);
-        }
       } else {
         reset();
       }
@@ -41,6 +32,15 @@ const search = () => {
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
+
+  // Making a seperate useEffect for updateSearchCount so that it doesnot race with loadMovies 
+  //  if we put below loadMovies() inside the above useEffect
+  useEffect(() => {
+    // Call updateSearchCount only if there are results
+    if (movies?.length! > 0 && movies?.[0]) {
+      updateSearchCount(searchQuery, movies[0]);
+    }
+  }, [movies]);
 
   return (
     <View className="flex-1 bg-primary">
