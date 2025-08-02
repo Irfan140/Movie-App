@@ -55,3 +55,22 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
   }
 };
 
+
+// Returns the trending movie so that we can show on the Home screen
+export const getTrendingMovies = async (): Promise<
+  TrendingMovie[] | undefined
+> => {
+  try {
+    const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      // Only gonna show top 5 movies
+      Query.limit(5),
+      Query.orderDesc("count"),
+    ]);
+
+    // This way TS will know exactly what we are returning
+    return result.documents as unknown as TrendingMovie[];
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+};
