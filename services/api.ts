@@ -29,8 +29,8 @@ export const fetchMovies = async ({ query }: { query: string }) => {
   return data.results;
 };
 
-
 // Movie Details
+// Promise<MovieDetails> → means the function returns a Promise that resolves to a MovieDetails type.
 export const fetchMovieDetails = async (
   movieId: string
 ): Promise<MovieDetails> => {

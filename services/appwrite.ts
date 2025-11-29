@@ -17,16 +17,14 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
   // Check if  record of that search has already been stored
   // if a document is found increment the searchCount field
   // if no document found  ( that means it is a new search term)
-     // create a new document is appwrite database -> initialise its count by 1
+  // create a new document in appwrite database -> initialise its count by 1
   try {
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.equal("searchTerm", query),
     ]);
 
-
-      // Update the count if document present otherwise create the document
+    // Update the count if document present otherwise create the document
     if (result.documents.length > 0) {
-
       // Top movie which shows for the search term
       const existingMovie = result.documents[0];
 
@@ -54,7 +52,6 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
     throw error;
   }
 };
-
 
 // Returns the trending movie so that we can show on the Home screen
 export const getTrendingMovies = async (): Promise<
