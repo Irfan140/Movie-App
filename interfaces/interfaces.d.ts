@@ -18,6 +18,8 @@ interface Movie {
 interface TrendingMovie {
   searchTerm: string;
   movie_id: number;
+  // Appwrite document id (unique per document)
+  $id?: string;
   title: string;
   count: number;
   poster_url: string;

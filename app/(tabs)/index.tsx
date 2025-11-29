@@ -80,7 +80,7 @@ export default function Index() {
                   renderItem={({ item, index }) => (
                     <TrendingCard movie={item} index={index} />
                   )}
-                  keyExtractor={(item) => item.movie_id.toString()}
+                  keyExtractor={(item) => (item.$id ?? item.movie_id).toString()}
                   ItemSeparatorComponent={() => <View className="w-4" />}
                 />
               </View>
