@@ -1,11 +1,6 @@
-# 🎬 Irfanix - Movie Discovery App
+# 🎬 Movie Discovery App
 
 A modern, feature-rich movie discovery application built with React Native and Expo, featuring trending movies, search functionality, and detailed movie information powered by The Movie Database (TMDB) API and Appwrite.
-
-![React Native](https://img.shields.io/badge/React_Native-0.79.5-blue)
-![Expo](https://img.shields.io/badge/Expo-~53.0.20-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-~5.8.3-blue)
-![NativeWind](https://img.shields.io/badge/NativeWind-4.1.23-38bdf8)
 
 ## ✨ Features
 
@@ -13,6 +8,8 @@ A modern, feature-rich movie discovery application built with React Native and E
 - 🔥 **Trending Movies** - View the most searched movies based on user activity
 - 📱 **Responsive Design** - Beautiful UI with custom tab navigation and smooth animations
 - 🎥 **Movie Details** - Comprehensive movie information including ratings, genres, runtime, and overview
+- 💾 **Save Movies** - Bookmark your favorite movies with persistent local storage
+- 📊 **Profile & Statistics** - Track your saved movies, trending searches, and activity
 - 💾 **Search Analytics** - Track popular searches using Appwrite backend
 - ⚡ **Fast Performance** - Optimized with custom hooks and efficient data fetching
 
@@ -22,7 +19,12 @@ A modern, feature-rich movie discovery application built with React Native and E
   <tr>
     <td><img src="assets/readme-assets/Screenshot_20251129_105042.jpg" alt="Home" width="240"/></td>
     <td><img src="assets/readme-assets/Screenshot_20251129_105113.jpg" alt="Notes List" width="240"/></td>
-    <td><img src="assets/readme-assets/Screenshot_20251129_105128.jpg" alt="Create Note" width="240"/></td>
+    <td><img src="assets/readme-assets/MovieCard.png" alt="Create Note" width="240"/></td>
+  </tr>
+  <tr>
+    <td><img src="assets/readme-assets/SavedScreen.jpg" alt="Home" width="240"/></td>
+    <td><img src="assets/readme-assets/ProfileScreen.jpg" alt="Notes List" width="240"/></td>
+
   </tr>
   
 </table>
@@ -33,18 +35,17 @@ A modern, feature-rich movie discovery application built with React Native and E
 - **Language:** TypeScript
 - **Navigation:** Expo Router with file-based routing
 - **Styling:** NativeWind - Tailwind CSS for React Native
+- **Storage:** AsyncStorage for local data persistence
 - **Backend:** Appwrite for search analytics and trending data
 - **API:** The Movie Database (TMDB) API for movie data
-
-
 
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Irfan140/Movie-App.git
-cd Movie-App-Expo
+git clone <repo-url>
+cd Movie Discovery App
 ```
 
 ### 2. Install dependencies
@@ -71,11 +72,13 @@ EXPO_PUBLIC_APPWRITE_COLLECTION_ID=your_collection_id
 #### Getting API Keys:
 
 **TMDB API:**
+
 1. Visit [The Movie Database](https://www.themoviedb.org/)
 2. Create an account and go to Settings > API
 3. Request an API key and copy the "Read Access Token"
 
 **Appwrite:**
+
 1. Visit [Appwrite Cloud](https://cloud.appwrite.io/)
 2. Create a new project
 3. Create a database and collection with the following attributes:
@@ -112,87 +115,132 @@ npm run lint       # Run ESLint for code quality
 ## 🏗️ Project Structure
 
 ```
-Movie-App-Expo/
-├── app/                        # Main application screens
-│   ├── (tabs)/                # Tab-based navigation screens
-│   │   ├── _layout.tsx       # Tab navigation layout
-│   │   ├── index.tsx         # Home screen (trending & latest movies)
-│   │   ├── search.tsx        # Search functionality
-│   │   ├── saved.tsx         # Saved movies (TODO)
-│   │   └── profile.tsx       # User profile (TODO)
+Movie-App/
+├── app/
+│   ├── (tabs)/
+│   │   ├── _layout.tsx
+│   │   ├── index.tsx
+│   │   ├── profile.tsx
+│   │   ├── saved.tsx
+│   │   └── search.tsx
 │   ├── movies/
-│   │   └── [id].tsx          # Dynamic movie details screen
-│   ├── _layout.tsx           # Root layout
-│   └── global.css            # Global styles
-├── components/                # Reusable components
-│   ├── MovieCard.tsx         # Movie card component
-│   ├── SearchBar.tsx         # Search input component
-│   └── TrendingCard.tsx      # Trending movie card with ranking
-├── services/                  # API and data services
-│   ├── api.ts                # TMDB API functions
-│   ├── appwrite.ts           # Appwrite backend functions
-│   └── usefetch.ts           # Custom data fetching hook
-├── constants/                 # App constants
-│   ├── icons.ts              # Icon exports
-│   └── images.ts             # Image exports
-├── interfaces/                # TypeScript interfaces
-│   └── interfaces.d.ts       # Type definitions
-├── assets/                    # Static assets
+│   │   └── [id].tsx
+│   ├── _layout.tsx
+│   └── global.css
+├── assets/
 │   ├── fonts/
+│   │   └── SpaceMono-Regular.ttf
 │   ├── icons/
-│   └── images/
-└── ...config files
+│   │   ├── arrow.png
+│   │   ├── home.png
+│   │   ├── logo.png
+│   │   ├── person.png
+│   │   ├── play.png
+│   │   ├── save.png
+│   │   ├── search.png
+│   │   └── star.png
+│   ├── images/
+│   │   ├── bg.png
+│   │   ├── highlight.png
+│   │   ├── logo.png
+│   │   └── rankingGradient.png
+│   └── readme-assets/
+├── components/
+│   ├── MovieCard.tsx
+│   ├── SearchBar.tsx
+│   └── TrendingCard.tsx
+├── constants/
+│   ├── icons.ts
+│   └── images.ts
+├── interfaces/
+│   └── interfaces.d.ts
+├── services/
+│   ├── api.ts
+│   ├── appwrite.ts
+│   ├── storage.ts
+│   └── usefetch.ts
+├── types/
+│   └── images.d.ts
+├── .env
+├── .gitignore
+├── app.json
+├── babel.config.js
+├── eslint.config.js
+├── expo-env.d.ts
+├── metro.config.js
+├── nativewind-env.d.ts
+├── package.json
+├── README.md
+├── tailwind.config.js
+└── tsconfig.json
 ```
 
 ## 🎯 Key Features Explained
 
 ### Custom Hook: `useFetch`
+
 A reusable hook that handles API requests with loading states, error handling, and manual refetch capability:
 
 ```typescript
 const { data, loading, error, refetch, reset } = useFetch(fetchFunction);
 ```
 
+Save Movies Feature
+Movies can be saved/bookmarked from the movie details screen:
+
+- **Persistent Storage**: Uses AsyncStorage for local data persistence
+- **Optimistic Updates**: Immediate UI feedback with error recovery
+- **Saved Screen**: View all saved movies in a grid layout
+- **Easy Removal**: Tap any saved movie to view details and unsave
+
+### Profile & Statistics
+
+Track your movie browsing activity:
+
+- **Saved Movies Count**: See how many movies you've bookmarked
+- **Trending Analytics**: View trending movies being searched by users
+- **Search Activity**: Track total searches across the platform
+- **Clear Data**: Option to clear all saved movies with confirmation
+
+###
+
 ### Debounced Search
+
 Search functionality implements a 500ms debounce to optimize API calls and reduce unnecessary requests.
 
 ### Trending Algorithm
+
 Movies are ranked based on search frequency, stored in Appwrite database with automatic count incrementation.
 
 ### File-based Routing
+
 Using Expo Router for intuitive navigation:
+
 - `(tabs)` - Group route for tab navigation
 - `[id]` - Dynamic route for movie details
 
 ## 🎨 Customization
 
-### Color Scheme
-Edit `tailwind.config.js` to customize the color palette:
+User authentication and profiles
 
-```javascript
-colors: {
-  primary: "#030014",      // Background
-  secondary: "#151312",    // Secondary background
-  accent: "#AB8BFF",       // Accent color
-  // ... more colors
-}
+- [ ] Movie recommendations based on saved movies
+- [ ] Video trailer playback integration
+- [ ] Social sharing features
+- [ ] Advanced filtering and sorting options
+- [ ] Dark/Light theme toggle
+
+## 🐛 Known Issues
+
+- Video playback not yet implemented
+- Rate This App button is a placeholder
+
 ```
 
 ## 🔜 Upcoming Features
 
-- [ ] Save/Bookmark movies functionality
-- [ ] User authentication and profiles
-- [ ] Movie watchlist
-- [ ] Movie recommendations
+- [ ] User authentication
 - [ ] Video trailer playback
 - [ ] Social sharing features
-
-## 🐛 Known Issues
-
-- Profile and Saved screens are currently placeholders (marked as TODO)
-- Video playback not yet implemented
-
-
 
 ## 👨‍💻 Author
 
@@ -207,3 +255,4 @@ If you have any questions or need help, please open an issue in the GitHub repos
 ---
 
 Made with ❤️ using React Native and Expo
+```
