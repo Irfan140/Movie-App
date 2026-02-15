@@ -77,3 +77,21 @@ interface TrendingCardProps {
   movie: TrendingMovie;
   index: number;
 }
+
+// New
+interface StatCardProps {
+  icon: any;
+  label: string;
+  value: string | number;
+  color: string;
+}
+
+interface InfoRowProps {
+  label: string;
+  value: string;
+}
+
+interface MovieInfoProps {
+  label: string;
+  value?: string | number | null;
+}

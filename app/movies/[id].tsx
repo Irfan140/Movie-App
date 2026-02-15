@@ -11,12 +11,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { icons } from "@/constants/icons";
 import { fetchMovieDetails } from "@/services/api";
+import { isMovieSaved, saveMovie, unsaveMovie } from "@/services/storage";
 import useFetch from "@/services/usefetch";
-
-interface MovieInfoProps {
-  label: string;
-  value?: string | number | null;
-}
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 
 // Movie info --> resusable component
 const MovieInfo = ({ label, value }: MovieInfoProps) => (
@@ -29,17 +27,74 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
 );
 
 const Details = () => {
-
   // For going back to previous screen
   const router = useRouter();
 
   // Getting the particular screen id
   const { id } = useLocalSearchParams();
 
+  // State for tracking if movie is saved
+  const [isSaved, setIsSaved] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+
   // Fetching the movie details
   const { data: movie, loading } = useFetch(() =>
-    fetchMovieDetails(id as string)
+    fetchMovieDetails(id as string),
   );
+
+  // Check if movie is saved when screen loads or comes into focus
+  const checkSavedStatus = useCallback(async () => {
+    if (movie?.id) {
+      setIsCheckingStatus(true);
+      const saved = await isMovieSaved(movie.id);
+      setIsSaved(saved);
+      setIsCheckingStatus(false);
+    }
+  }, [movie?.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      checkSavedStatus();
+    }, [checkSavedStatus]),
+  );
+
+  // Handle save/unsave toggle
+  const handleToggleSave = async () => {
+    if (!movie || isCheckingStatus) return;
+
+    // Optimistic UI update
+    const newSavedState = !isSaved;
+    setIsSaved(newSavedState);
+
+    try {
+      if (isSaved) {
+        await unsaveMovie(movie.id);
+      } else {
+        // Convert MovieDetails to Movie type for saving
+        const movieToSave: Movie = {
+          id: movie.id,
+          title: movie.title,
+          adult: movie.adult,
+          backdrop_path: movie.backdrop_path || "",
+          genre_ids: movie.genres.map((g) => g.id),
+          original_language: movie.original_language,
+          original_title: movie.original_title,
+          overview: movie.overview || "",
+          popularity: movie.popularity,
+          poster_path: movie.poster_path || "",
+          release_date: movie.release_date,
+          video: movie.video,
+          vote_average: movie.vote_average,
+          vote_count: movie.vote_count,
+        };
+        await saveMovie(movieToSave);
+      }
+    } catch (error) {
+      console.error("Error toggling save:", error);
+      // Revert on error
+      setIsSaved(!newSavedState);
+    }
+  };
 
   if (loading)
     return (
@@ -65,6 +120,20 @@ const Details = () => {
               source={icons.play}
               className="w-6 h-7 ml-1"
               resizeMode="stretch"
+            />
+          </TouchableOpacity>
+
+          {/* Save/Unsave Button */}
+          <TouchableOpacity
+            className="absolute bottom-5 left-5 rounded-full size-14 flex items-center justify-center bg-white/90"
+            onPress={handleToggleSave}
+            activeOpacity={0.7}
+          >
+            <Image
+              source={icons.save}
+              className="w-7 h-7"
+              tintColor={isSaved ? "#E11D48" : "#000"}
+              resizeMode="contain"
             />
           </TouchableOpacity>
         </View>
@@ -104,7 +173,7 @@ const Details = () => {
             <MovieInfo
               label="Revenue"
               value={`$${Math.round(
-                (movie?.revenue ?? 0) / 1_000_000
+                (movie?.revenue ?? 0) / 1_000_000,
               )} million`}
             />
           </View>
